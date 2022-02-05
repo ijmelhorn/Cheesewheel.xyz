@@ -1,14 +1,14 @@
 pragma solidity ^0.5.0;
 
-import "./KaseiCoin.sol";
+import "./KYTE.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/crowdsale/Crowdsale.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/crowdsale/emission/MintedCrowdsale.sol";
 
-contract KaseiCoinCrowdsale is Crowdsale, MintedCrowdsale {
+contract KYTECrowdsale is Crowdsale, MintedCrowdsale {
     constructor(
         uint rate,
         address payable wallet,
-        KaseiCoin token
+        KYTE token
     )
         Crowdsale(rate, wallet, token)
         public
@@ -17,9 +17,9 @@ contract KaseiCoinCrowdsale is Crowdsale, MintedCrowdsale {
     }
 }
 
-contract KaseiCoinCrowdsaleDeployer {
-    address public kasei_token_address;
-    address public kasei_crowdsale_address;
+contract KYTECrowdsaleDeployer {
+    address public kyte_token_address;
+    address public kyte_crowdsale_address;
 
     constructor(
         string memory name,
@@ -28,13 +28,13 @@ contract KaseiCoinCrowdsaleDeployer {
     )
         public
     {
-        KaseiCoin token = new KaseiCoin(name, symbol, 0);
-        kasei_token_address = address(token);
+        KYTE token = new KYTE(name, symbol, 0);
+        kyte_token_address = address(token);
 
-        KaseiCoinCrowdsale kasei_crowdsale = new KaseiCoinCrowdsale(1, wallet, token);
-        kasei_crowdsale_address = address(kasei_crowdsale);
+        KYTECrowdsale kyte_crowdsale = new KYTECrowdsale(1, wallet, token);
+        kyte_crowdsale_address = address(kyte_crowdsale);
 
-        token.addMinter(kasei_crowdsale_address);
+        token.addMinter(kyte_crowdsale_address);
         token.renounceMinter();
     }
 }
