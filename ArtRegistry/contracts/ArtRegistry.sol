@@ -3,7 +3,7 @@ pragma solidity ^0.5.0;
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/token/ERC721/ERC721Full.sol";
 
 contract ArtRegistry is ERC721Full {
-    constructor() public ERC721Full("ArtRegistryToken", "ART") {}
+    constructor() public ERC721Full("cheesewheel", "KYTE") {}
 
     struct Artwork {
         string name;
@@ -16,12 +16,8 @@ contract ArtRegistry is ERC721Full {
     event Appraisal(uint256 tokenId, uint256 appraisalValue, string reportURI);
 
     function registerArtwork(
-        address owner,
-        string memory name,
-        string memory artist,
-        uint256 initialAppraisalValue,
-        string memory tokenURI
-    ) public returns (uint256) {
+        address owner,  string memory name,      string memory artist,        uint256 initialAppraisalValue,        string memory tokenURI    ) 
+        public returns (uint256) {
         uint256 tokenId = totalSupply();
 
         _mint(owner, tokenId);
