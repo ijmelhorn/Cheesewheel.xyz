@@ -4,6 +4,8 @@ from web3 import Web3
 from pathlib import Path
 from dotenv import load_dotenv
 import streamlit as st
+import requests as r
+import json
 
 from pinata import pin_file_to_ipfs, pin_json_to_ipfs, convert_data_to_json
 
@@ -21,7 +23,7 @@ w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
 def load_contract():
 
     # Load the contract ABI
-    with open(Path('./contracts/compiled/artregistry_abi.json')) as f:
+    with open(Path('./contracts/compiled/cheeseWheel_abi.json')) as f:
         contract_abi = json.load(f)
 
     # Set the contract address (this is the address of the deployed contract)
@@ -67,7 +69,7 @@ def pin_appraisal_report(report_content):
     return report_ipfs_hash
 
 
-st.title("Art Registry Appraisal System")
+st.title("Cheesewheel DAO Registry System")
 st.write("Choose an account to get started")
 accounts = w3.eth.accounts
 address = st.selectbox("Select Account", options=accounts)
@@ -96,7 +98,9 @@ if st.button("Register Artwork"):
     st.write(dict(receipt))
     st.write("You can view the pinned metadata file with the following IPFS Gateway Link")
     st.markdown(f"[Artwork IPFS Gateway Link](https://ipfs.io/ipfs/{artwork_ipfs_hash})")
+    
 st.markdown("---")
+
 
 
 ################################################################################
@@ -107,8 +111,9 @@ tokens = contract.functions.totalSupply().call()
 token_id = st.selectbox("Choose an Art Token ID", list(range(tokens)))
 new_appraisal_value = st.text_input("Enter the new appraisal amount")
 appraisal_report_content = st.text_area("Enter details for the Appraisal Report")
-if st.button("Appraise Artwork"):
 
+
+if st.button("Appraise Artwork"):
     # Use Pinata to pin an appraisal report for the report URI
     appraisal_report_ipfs_hash =  pin_appraisal_report(appraisal_report_content)
     report_uri = f"ipfs://{appraisal_report_ipfs_hash}"
@@ -122,6 +127,9 @@ if st.button("Appraise Artwork"):
     receipt = w3.eth.waitForTransactionReceipt(tx_hash)
     st.write(receipt)
 st.markdown("---")
+
+
+
 
 ################################################################################
 # Get Appraisals
@@ -151,3 +159,29 @@ if st.button("Get Appraisal Reports"):
             st.write(report_dictionary["args"])
     else:
         st.write("This artwork has no new appraisals")
+
+################################################################################
+# Display a Token
+################################################################################
+st.markdown("## Display an Art Token")
+#selected_address = st.selectbox("Select Account", options=accounts)
+tokens = contract.functions.balanceOf(address).call()
+st.write(f"This address owns {tokens} tokens")
+st.write("Choose an account to get started")
+selected_token_id = st.selectbox("select token_id",options=range(tokens))
+#token_id = st.selectbox("Artwork Tokens", list(range(tokens)))
+
+
+if st.button("Display"):
+    # Get the art token owner
+    owner = contract.functions.ownerOf(token_id).call()
+    st.write(f"The token is registered to {owner}")
+     # Get the art token's URI
+    token_uri = contract.functions.tokenURI(selected_token_id).call()
+    ipfsblob = r.get('https://gateway.pinata.cloud/ipfs/'+token_uri[7:]) 
+    st.write(f"The tokenURI is {token_uri}")
+    st.image('https://gateway.pinata.cloud/ipfs/'+ipfsblob.json()['image'])
+
+
+
+
