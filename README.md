@@ -9,4 +9,4 @@ A launchpad for emerging artists to get discovered and build a community using W
 - Cheesewheel.xyz also provides Web3 educational resources to help onboard artists into Web3 and gives them an ENS domain and a Mirror blogging profile to communicate to their audience.
 
 ## dApp Front-end Interface ##
-![x](/Images/cheesewheel.xyz.PNG)
+![x](/Images/cheesewheel.xyz.png)
